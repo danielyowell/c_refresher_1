@@ -1,89 +1,98 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/*
-
-Input files: input1, input2, etc.
-Output files: output1, output2, etc.
-
-Example: ./prog input1.txt output1.txt
-
-*/
 int main(int argc, char *argv[]) {
-
-    // Check for correct number of arguments
+    
+/* GET INPUT/OUTPUT FILES */
+    
     if (argc != 3) {
         fprintf(stderr, "Usage: %s input_fd output_fd\n", argv[0]);
         return 1;
     }
 
-    FILE *file;
-    double *buffer;
-    long file_size;
+    const char *inputFilePath = argv[1];
+    const char *outputFilePath = argv[2];
 
-/* 1. OPEN FILE, READ FIRST LINE */
-    file = fopen("input1.txt", "rb");
-        if(file == NULL) {
-            perror("Error: file not found");
-            return 1;
-        }
+    FILE *inputFile = fopen(inputFilePath, "r");
+    FILE *outputFile = fopen(outputFilePath, "w");
 
-    // Determine size of buffer
+    if (inputFile == NULL || outputFile == NULL) {
+        perror("Failed to open file");
+        return 1;
+    }
+
+    // Read the integer in the first line of inputFile
     char initialVal[256];
-    if(fgets(initialVal, sizeof(initialVal), file) == NULL) {
+    if(fgets(initialVal, sizeof(initialVal), inputFile) == NULL) {
         perror("Error 2");
-        fclose(file);
+        fclose(inputFile);
         return 1;
     }
 
-    int fval;
-    if(sscanf(initialVal, "%d", &fval) != 1) {
+    // convert initialVal to intVal
+    int intVal;
+    if(sscanf(initialVal, "%d", &intVal) != 1) {
         perror("Error 3");
-        fclose(file);
+        fclose(inputFile);
+        return 1;
+    }
+    // print fval to console
+    printf("%d\n", intVal);
+
+    // Each line of inputFile contains a float. Read each line into a buffer, convert to float, and store in array
+    char *buffer = (char* )malloc( 80 );
+    size_t len = 0;
+    ssize_t read;
+
+    float *arr = (float *)malloc(intVal * sizeof(float));
+
+    if (arr == NULL) {
+        printf("Memory allocation failed.\n");
         return 1;
     }
 
-/* 2. READ REMAINING LINES INTO DOUBLES BUFFER */
-
-    // Create buffer
-    buffer = (double *)malloc(fval);
-    if (buffer == NULL) {
-        perror("Memory allocation error");
-        fclose(file);
-        return 1;
+    // print contents of buffer
+    size_t sizeValue = (size_t)intVal;
+    for (int i = 0; i < intVal; i++) {
+            read = getline(&buffer, &sizeValue, inputFile);
+            // convert all elements of buffer to float
+            char *ptr;
+            float fval = strtof(buffer, &ptr);
+            //printf("%f\n", fval);
+            arr[i] = fval;
     }
 
-    // Read the contents of the file into the buffer
-    size_t newLen = fread(buffer, sizeof(double), fval, file);
-    if (newLen == 0) {
-        perror("Error 4");
-        fclose(file);
-        return 1;
+    //printf("final test:\n");
+    for (int i = 0; i < intVal; i++) {
+        printf("%f\n", arr[i]);
     }
-    // Print contents of newLen
-    printf("newLen: %zu\n", newLen);
-
-    /*
-    if (fread(buffer, sizeof(double), fval, file) != fval) {
-        perror("Buffer error lol");
-        fclose(file);
-        free(buffer); // free the allocated memory
-        return 1;
-    }
-    */
-
-/* 3. RUN SORTING ALGORITHM */
-
-    int swapped;
-    int x;
-    printf("Your lucky number is: %d\n", fval);
     
-    for (size_t i = 0; i < fval; i++) {
-        printf("Element %zu: %lf\n", i, buffer[i]);
+
+    // Perform bubble sort on arr
+    float temp;
+    for (int i = 0; i < intVal - 1; i++) {
+        for (int j = 0; j < intVal - i - 1; j++) {
+            if (arr[j] > arr[j+1]) {
+                // swap arr[j] and arr[j+1]
+                temp = arr[j];
+                arr[j] = arr[j+1];
+                arr[j+1] = temp;
+            }
+        }
     }
 
-    fclose(file);
-    free(buffer); // free the allocated memory
+/* WRITE SORTED ARRAY TO OUTPUT FILE */
+
+    // Write the sorted array to outputFile
+    for (int i = 0; i < intVal; i++) {
+        fprintf(outputFile, "%f\n", arr[i]);
+    }
+
+    // Close files, free memory
+    fclose(inputFile);
+    fclose(outputFile);
+    free( buffer );
+    free( arr );
     return 0;
 
 }
