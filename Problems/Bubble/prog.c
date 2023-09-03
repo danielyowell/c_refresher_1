@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
     }
     
 
-/* PERFORM BUBBLE SORT ON ARR*/
+/* PERFORM BUBBLE SORT ON ARR */
 
     float temp;
     for (int i = 0; i < intVal - 1; i++) {
