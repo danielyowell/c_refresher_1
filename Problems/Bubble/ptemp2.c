@@ -68,8 +68,25 @@ int main(int argc, char *argv[]) {
     }
     
 
-    // Perform file operations using inputFile and outputFile
-    printf("Hello world!!!\n");
+    // Perform bubble sort on arr
+    float temp;
+    for (int i = 0; i < intVal - 1; i++) {
+        for (int j = 0; j < intVal - i - 1; j++) {
+            if (arr[j] > arr[j+1]) {
+                // swap arr[j] and arr[j+1]
+                temp = arr[j];
+                arr[j] = arr[j+1];
+                arr[j+1] = temp;
+            }
+        }
+    }
+
+/* WRITE SORTED ARRAY TO OUTPUT FILE */
+
+    // Write the sorted array to outputFile
+    for (int i = 0; i < intVal; i++) {
+        fprintf(outputFile, "%f\n", arr[i]);
+    }
 
     // Close files, free memory
     fclose(inputFile);
