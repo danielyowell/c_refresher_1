@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // convert initialVal to int
+    // convert initialVal to intVal
     int intVal;
     if(sscanf(initialVal, "%d", &intVal) != 1) {
         perror("Error 3");
@@ -44,9 +44,17 @@ int main(int argc, char *argv[]) {
     size_t len = 0;
     ssize_t read;
 
+    float *arr = (float *)malloc(intVal * sizeof(float));
+
+    if (arr == NULL) {
+        printf("Memory allocation failed.\n");
+        return 1;
+    }
+
     // print contents of buffer
     size_t sizeValue = (size_t)intVal;
-    while ((read = getline(&buffer, &sizeValue, inputFile)) != -1) {
+    for (int i = 0; i < intVal; i++) {
+            read = getline(&buffer, &sizeValue, inputFile);
             // convert all elements of buffer to float
             char *ptr;
             float fval = strtof(buffer, &ptr);
@@ -64,7 +72,7 @@ int main(int argc, char *argv[]) {
     fclose(inputFile);
     fclose(outputFile);
     free( buffer );
-    
+    free( arr );
     return 0;
 
 }
