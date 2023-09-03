@@ -21,52 +21,29 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-// print contents of inputFile to console
-    char c;
-    while ((c = fgetc(inputFile)) != EOF) {
-        printf("%c", c);
+// // print contents of inputFile to console
+//     char c;
+//     while ((c = fgetc(inputFile)) != EOF) {
+//         printf("%c", c);
+//     }
+
+//     rewind(inputFile);
+
+// print contents of inputFile to buffer
+    char *buffer = (char* )malloc( 80 );
+    size_t len = 0;
+    ssize_t read;
+
+// print contents of buffer
+    while ((read = getline(&buffer, &len, inputFile)) != -1) {
+        printf("%s", buffer);
     }
 
-    rewind(inputFile);
+// convert all elements of buffer to float
+    char *ptr;
+    float fval = strtof(buffer, &ptr);
+    printf("%f\n", fval);
 
-
-// Read floating points from inputFile into malloc'd buffer
-
-    // Determine size of buffer
-    char initialVal[256];
-    if(fgets(initialVal, sizeof(initialVal), inputFile) == NULL) {
-        perror("Error 2");
-        fclose(inputFile);
-        return 1;
-    }
-
-    int fval;
-    if(sscanf(initialVal, "%d", &fval) != 1) {
-        perror("Error 3");
-        fclose(inputFile);
-        return 1;
-    }
-
-    // Create buffer
-    float *buffer = (float *)malloc(fval);
-    if (buffer == NULL) {
-        perror("Memory allocation error");
-        fclose(inputFile);
-        return 1;
-    }
-
-    // Read the contents of the file into the buffer
-    size_t newLen = fread(buffer, sizeof(float), fval, inputFile);
-    if (newLen == 0) {
-        perror("Error 4");
-        fclose(inputFile);
-        return 1;
-    }
-
-    // Print contents of buffer to outputFile
-    for (int i = 0; i < fval; i++) {
-        fprintf(outputFile, "%f\n", buffer[i]);
-    }
 
     // Perform file operations using inputFile and outputFile
     printf("Hello world!!!\n");
