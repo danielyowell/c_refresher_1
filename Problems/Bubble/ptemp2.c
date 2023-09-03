@@ -58,11 +58,14 @@ int main(int argc, char *argv[]) {
             // convert all elements of buffer to float
             char *ptr;
             float fval = strtof(buffer, &ptr);
-            printf("%f\n", fval);
+            //printf("%f\n", fval);
+            arr[i] = fval;
     }
 
-
-
+    //printf("final test:\n");
+    for (int i = 0; i < intVal; i++) {
+        printf("%f\n", arr[i]);
+    }
     
 
     // Perform file operations using inputFile and outputFile
