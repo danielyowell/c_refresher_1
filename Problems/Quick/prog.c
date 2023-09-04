@@ -70,7 +70,6 @@ int main(int argc, char *argv[]) {
 
 /* PERFORM QUICK SORT ON ARR */
 
-    // quick sort
     for (int i = 1; i < intVal; i++) {
         float key = arr[i];
         int j = i - 1;
