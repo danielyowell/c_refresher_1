@@ -1,46 +1,98 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/*
+int main(int argc, char *argv[]) {
+    
+/* GET INPUT/OUTPUT FILES */
+    
+    if (argc != 3) {
+        fprintf(stderr, "Usage: %s input_fd output_fd\n", argv[0]);
+        return 1;
+    }
 
-Input files: input1, input2, etc.
-Output files: output1, output2, etc.
+    const char *inputFilePath = argv[1];
+    const char *outputFilePath = argv[2];
 
-*/
-int main() {
- FILE *file;
- char *buffer;
- long file_size;
+    FILE *inputFile = fopen(inputFilePath, "r");
+    FILE *outputFile = fopen(outputFilePath, "w");
 
-// Open input file
- file = fopen("input1.txt", "rb");
+    if (inputFile == NULL || outputFile == NULL) {
+        perror("Failed to open file");
+        return 1;
+    }
 
- if(file == NULL) {
-  perror("Error: file not found");
-  return 1;
- }
+    // Read the integer in the first line of inputFile
+    char initialVal[256];
+    if(fgets(initialVal, sizeof(initialVal), inputFile) == NULL) {
+        perror("Error 2");
+        fclose(inputFile);
+        return 1;
+    }
 
-// Determine size of buffer
-char initialVal[256];
-if(fgets(initialVal, sizeof(initialVal), file) == NULL) {
- perror("Error 2");
- fclose(file);
- return 1;
-}
+    // convert initialVal to intVal
+    int intVal;
+    if(sscanf(initialVal, "%d", &intVal) != 1) {
+        perror("Error 3");
+        fclose(inputFile);
+        return 1;
+    }
+    // print fval to console
+    printf("%d\n", intVal);
 
-int fval;
-if(sscanf(initialVal, "%d", &fval) != 1) {
- perror("Error 3");
- fclose(file);
- return 1;
-}
+    // Each line of inputFile contains a float. Read each line into a buffer, convert to float, and store in array
+    char *buffer = (char* )malloc( 80 );
+    size_t len = 0;
+    ssize_t read;
 
-// Boilerplate
- int swapped;
- int x;
- printf("Your lucky number is: %d\n", fval);
- 
- fclose(file);
- return 0;
+    float *arr = (float *)malloc(intVal * sizeof(float));
+
+    if (arr == NULL) {
+        printf("Memory allocation failed.\n");
+        return 1;
+    }
+
+    // print contents of buffer
+    size_t sizeValue = (size_t)intVal;
+    for (int i = 0; i < intVal; i++) {
+            read = getline(&buffer, &sizeValue, inputFile);
+            // convert all elements of buffer to float
+            char *ptr;
+            float fval = strtof(buffer, &ptr);
+            //printf("%f\n", fval);
+            arr[i] = fval;
+    }    
+
+/* PERFORM SELECTION SORT ON ARR */
+
+    for (int i = 0; i < intVal - 1; i++) {
+        int minIndex = i;
+        for (int j = i + 1; j < intVal; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+        float temp = arr[minIndex];
+        arr[minIndex] = arr[i];
+        arr[i] = temp;
+    }
+
+    //printf("final test:\n");
+    for (int i = 0; i < intVal; i++) {
+        printf("%f\n", arr[i]);
+    }
+
+/* WRITE SORTED ARRAY TO OUTPUT FILE */
+
+    // Write the sorted array to outputFile
+    for (int i = 0; i < intVal; i++) {
+        fprintf(outputFile, "%f\n", arr[i]);
+    }
+
+    // Close files, free memory
+    fclose(inputFile);
+    fclose(outputFile);
+    free( buffer );
+    free( arr );
+    return 0;
 
 }
