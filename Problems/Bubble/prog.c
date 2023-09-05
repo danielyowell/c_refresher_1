@@ -3,16 +3,10 @@
 
 int main(int argc, char *argv[]) {
 
-/* case for if no arguments passed to main */
-    if (argc == 1) {
-        printf("Error: need to pass input and output txt files as args\n");
-        return 1;
-    }
-
 /* GET INPUT/OUTPUT FILES */
     
     if (argc != 3) {
-        fprintf(stderr, "Usage: %s input_fd output_fd\n", argv[0]);
+        fprintf(stderr, "Expected format: %s input#.txt output#.txt\n", argv[0]);
         return 1;
     }
 
@@ -23,6 +17,7 @@ int main(int argc, char *argv[]) {
     FILE *outputFile = fopen(outputFilePath, "w");
 
     if (inputFile == NULL || outputFile == NULL) {
+        remove(argv[2]); // delete output file if it was created
         perror("Failed to open file");
         return 1;
     }
@@ -42,8 +37,8 @@ int main(int argc, char *argv[]) {
         fclose(inputFile);
         return 1;
     }
-    // print fval to console
-    printf("%d\n", intVal);
+    // ##################################### print fval to console
+    // printf("%d\n", intVal);
 
     // Each line of inputFile contains a float. Read each line into a buffer, convert to float, and store in array
     char *buffer = (char* )malloc( 80 );
