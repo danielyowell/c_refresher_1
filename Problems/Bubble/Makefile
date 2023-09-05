@@ -3,11 +3,13 @@
 # We want to cover 100% of prog through these tests
 # TODO: write test cases for invalid/insufficient arguments
 run-tests-coverage: build
+	./prog
 	./prog input1.txt output1.txt
 	gcov prog.c
 
 # Run Valgrind to find memory leaks, requires that we build the code
 run-tests-leak: build
+	valgrind --tool=memcheck --leak-check=yes --show-reachable=yes --num-callers=20 --track-fds=yes ./prog
 	valgrind --tool=memcheck --leak-check=yes --show-reachable=yes --num-callers=20 --track-fds=yes ./prog input1.txt output1.txt
 
 # Compile the code, requires that we clean up some files first.

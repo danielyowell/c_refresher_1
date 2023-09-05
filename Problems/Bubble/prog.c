@@ -7,7 +7,7 @@ int main(int argc, char *argv[]) {
     
     if (argc != 3) {
         fprintf(stderr, "Expected format: %s input#.txt output#.txt\n", argv[0]);
-        return 1;
+        return 0;
     }
 
     const char *inputFilePath = argv[1];
@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
     if (inputFile == NULL || outputFile == NULL) {
         remove(argv[2]); // delete output file if it was created
         perror("Failed to open file");
-        return 1;
+        return 0;
     }
 
     // Read the integer in the first line of inputFile
@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
     if(fgets(initialVal, sizeof(initialVal), inputFile) == NULL) {
         perror("Error 2");
         fclose(inputFile);
-        return 1;
+        return 0;
     }
 
     // convert initialVal to intVal
@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
     if(sscanf(initialVal, "%d", &intVal) != 1) {
         perror("Error 3");
         fclose(inputFile);
-        return 1;
+        return 0;
     }
     // ##################################### print fval to console
     // printf("%d\n", intVal);
@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
 
     if (arr == NULL) {
         printf("Memory allocation failed.\n");
-        return 1;
+        return 0;
     }
 
     // print contents of buffer
