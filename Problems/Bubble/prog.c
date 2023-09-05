@@ -47,10 +47,12 @@ int main(int argc, char *argv[]) {
 
     float *arr = (float *)malloc(intVal * sizeof(float));
 
+    /* oh boy i sure hope i won't regret this later
     if (arr == NULL) {
         printf("Memory allocation failed.\n");
         return 0;
     }
+    */
 
     // print contents of buffer
     size_t sizeValue = (size_t)intVal;

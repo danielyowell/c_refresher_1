@@ -4,13 +4,19 @@
 # TODO: write test cases for invalid/insufficient arguments
 run-tests-coverage: build
 	./prog
+	./prog A B
 	./prog input1.txt output1.txt
+	./prog input2.txt output2.txt
+	./prog input3.txt output3.txt
 	gcov prog.c
 
 # Run Valgrind to find memory leaks, requires that we build the code
 run-tests-leak: build
 	valgrind --tool=memcheck --leak-check=yes --show-reachable=yes --num-callers=20 --track-fds=yes ./prog
+	valgrind --tool=memcheck --leak-check=yes --show-reachable=yes --num-callers=20 --track-fds=yes ./prog A B
 	valgrind --tool=memcheck --leak-check=yes --show-reachable=yes --num-callers=20 --track-fds=yes ./prog input1.txt output1.txt
+	valgrind --tool=memcheck --leak-check=yes --show-reachable=yes --num-callers=20 --track-fds=yes ./prog input2.txt output2.txt
+	valgrind --tool=memcheck --leak-check=yes --show-reachable=yes --num-callers=20 --track-fds=yes ./prog input3.txt output3.txt
 
 # Compile the code, requires that we clean up some files first.
 # Add –lm if your code needs the math library.
