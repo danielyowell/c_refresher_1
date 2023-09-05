@@ -76,7 +76,6 @@ int main(int argc, char *argv[]) {
         arr[i] = temp;
     }
 
-    //printf("final test:\n");
     for (int i = 0; i < intVal; i++) {
         printf("%f\n", arr[i]);
     }

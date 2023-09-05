@@ -2,7 +2,13 @@
 #include <stdlib.h>
 
 int main(int argc, char *argv[]) {
-    
+
+/* case for if no arguments passed to main */
+    if (argc == 1) {
+        printf("Error: need to pass input and output txt files as args\n");
+        return 1;
+    }
+
 /* GET INPUT/OUTPUT FILES */
     
     if (argc != 3) {
@@ -61,13 +67,7 @@ int main(int argc, char *argv[]) {
             //printf("%f\n", fval);
             arr[i] = fval;
     }
-
-    //printf("final test:\n");
-    for (int i = 0; i < intVal; i++) {
-        printf("%f\n", arr[i]);
-    }
     
-
 /* PERFORM BUBBLE SORT ON ARR */
 
     float temp;
