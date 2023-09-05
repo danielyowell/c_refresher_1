@@ -73,6 +73,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
+
 /* WRITE SORTED ARRAY TO OUTPUT FILE */
 
     // Write the sorted array to outputFile

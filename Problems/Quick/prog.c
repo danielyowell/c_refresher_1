@@ -1,13 +1,17 @@
+/*
+@author: Daniel Yowell
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 
 int main(int argc, char *argv[]) {
-    
+
 /* GET INPUT/OUTPUT FILES */
     
     if (argc != 3) {
-        fprintf(stderr, "Usage: %s input_fd output_fd\n", argv[0]);
-        return 1;
+        fprintf(stderr, "Expected format: %s input#.txt output#.txt\n", argv[0]);
+        return 0; // learned the hard way: return 0 for all terminations, not 1, otherwise gcov will throw error
     }
 
     const char *inputFilePath = argv[1];
@@ -17,16 +21,17 @@ int main(int argc, char *argv[]) {
     FILE *outputFile = fopen(outputFilePath, "w");
 
     if (inputFile == NULL || outputFile == NULL) {
+        remove(argv[2]); // delete output file if it was created
         perror("Failed to open file");
-        return 1;
+        return 0;
     }
 
-    // Read the integer in the first line of inputFile
+    // read the integer in the first line of inputFile
     char initialVal[256];
     if(fgets(initialVal, sizeof(initialVal), inputFile) == NULL) {
         perror("Error 2");
         fclose(inputFile);
-        return 1;
+        return 0;
     }
 
     // convert initialVal to intVal
@@ -34,40 +39,26 @@ int main(int argc, char *argv[]) {
     if(sscanf(initialVal, "%d", &intVal) != 1) {
         perror("Error 3");
         fclose(inputFile);
-        return 1;
+        return 0;
     }
-    // print fval to console
-    printf("%d\n", intVal);
 
-    // Each line of inputFile contains a float. Read each line into a buffer, convert to float, and store in array
+    // each line of inputFile contains a float. read each line into a buffer, convert to float, and store in array
     char *buffer = (char* )malloc( 80 );
     size_t len = 0;
     ssize_t read;
 
+    // second buffer may be redundant but I'm not sure how to reuse the first one
     float *arr = (float *)malloc(intVal * sizeof(float));
-
-    if (arr == NULL) {
-        printf("Memory allocation failed.\n");
-        return 1;
-    }
 
     // print contents of buffer
     size_t sizeValue = (size_t)intVal;
     for (int i = 0; i < intVal; i++) {
             read = getline(&buffer, &sizeValue, inputFile);
-            // convert all elements of buffer to float
             char *ptr;
             float fval = strtof(buffer, &ptr);
-            //printf("%f\n", fval);
             arr[i] = fval;
     }
-
-    //printf("final test:\n");
-    for (int i = 0; i < intVal; i++) {
-        printf("%f\n", arr[i]);
-    }
     
-
 /* PERFORM QUICK SORT ON ARR */
 
     for (int i = 1; i < intVal; i++) {
@@ -79,8 +70,6 @@ int main(int argc, char *argv[]) {
         }
         arr[j+1] = key;
     }
-    
-    
 
 /* WRITE SORTED ARRAY TO OUTPUT FILE */
 
@@ -89,7 +78,7 @@ int main(int argc, char *argv[]) {
         fprintf(outputFile, "%f\n", arr[i]);
     }
 
-    // Close files, free memory
+    // close files and free memory
     fclose(inputFile);
     fclose(outputFile);
     free( buffer );
