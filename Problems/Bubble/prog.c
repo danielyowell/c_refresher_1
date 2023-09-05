@@ -1,3 +1,7 @@
+/*
+@author: Daniel Yowell
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -7,7 +11,7 @@ int main(int argc, char *argv[]) {
     
     if (argc != 3) {
         fprintf(stderr, "Expected format: %s input#.txt output#.txt\n", argv[0]);
-        return 0;
+        return 0; // learned the hard way: return 0 for all terminations, not 1, otherwise gcov will throw error
     }
 
     const char *inputFilePath = argv[1];
@@ -22,7 +26,7 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    // Read the integer in the first line of inputFile
+    // read the integer in the first line of inputFile
     char initialVal[256];
     if(fgets(initialVal, sizeof(initialVal), inputFile) == NULL) {
         perror("Error 2");
@@ -37,31 +41,21 @@ int main(int argc, char *argv[]) {
         fclose(inputFile);
         return 0;
     }
-    // ##################################### print fval to console
-    // printf("%d\n", intVal);
 
-    // Each line of inputFile contains a float. Read each line into a buffer, convert to float, and store in array
+    // each line of inputFile contains a float. read each line into a buffer, convert to float, and store in array
     char *buffer = (char* )malloc( 80 );
     size_t len = 0;
     ssize_t read;
 
+    // second buffer may be redundant but I'm not sure how to reuse the first one
     float *arr = (float *)malloc(intVal * sizeof(float));
-
-    /* oh boy i sure hope i won't regret this later
-    if (arr == NULL) {
-        printf("Memory allocation failed.\n");
-        return 0;
-    }
-    */
 
     // print contents of buffer
     size_t sizeValue = (size_t)intVal;
     for (int i = 0; i < intVal; i++) {
             read = getline(&buffer, &sizeValue, inputFile);
-            // convert all elements of buffer to float
             char *ptr;
             float fval = strtof(buffer, &ptr);
-            //printf("%f\n", fval);
             arr[i] = fval;
     }
     
@@ -86,7 +80,7 @@ int main(int argc, char *argv[]) {
         fprintf(outputFile, "%f\n", arr[i]);
     }
 
-    // Close files, free memory
+    // close files and free memory
     fclose(inputFile);
     fclose(outputFile);
     free( buffer );
